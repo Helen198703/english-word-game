@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语单词大冒险 · 三年级上册(外研版)</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+    background: linear-gradient(160deg,#aee9ff 0%,#d7f8e4 50%,#fff3c4 100%);
+    min-height:100vh; padding-bottom:60px;
+  }
+  header {
+    text-align:center; padding:22px 12px 12px;
+  }
+  header h1 { font-size:2rem; color:#e2543e; text-shadow:2px 2px 0 #fff; letter-spacing:2px; }
+  header p { color:#4a7c6f; margin-top:4px; font-size:.95rem; }
+  .stars {
+    position:fixed; top:10px; right:12px; z-index:50;
+    background:#fff; border-radius:30px; padding:6px 16px;
+    font-size:1.1rem; font-weight:bold; color:#e8a200;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+  }
+  .tabs { display:flex; justify-content:center; gap:12px; margin:14px 0 6px; flex-wrap:wrap; }
+  .tab-btn {
+    border:none; cursor:pointer; font-size:1.15rem; font-weight:bold;
+    padding:12px 30px; border-radius:40px; color:#fff; background:#b8c4cc;
+    box-shadow:0 4px 0 rgba(0,0,0,.12); transition:transform .1s;
+  }
+  .tab-btn:active { transform:translateY(3px); box-shadow:none; }
+  .tab-btn.active-p { background:linear-gradient(135deg,#ff8a5c,#e2543e); }
+  .tab-btn.active-w { background:linear-gradient(135deg,#3fb6ff,#2b7fd4); }
+  .panel { max-width:980px; margin:0 auto; padding:10px 14px; }
+  .hidden { display:none !important; }
+
+  .sub-tabs { display:flex; justify-content:center; gap:10px; margin:12px 0; flex-wrap:wrap; }
+  .sub-btn {
+    border:3px solid #fff; cursor:pointer; font-size:1rem; font-weight:bold;
+    padding:8px 20px; border-radius:30px; background:#ffffffaa; color:#357;
+  }
+  .sub-btn.on { background:#ffd54d; color:#7a4b00; border-color:#ffb300; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; }
+  .p-card {
+    background:#fff; border-radius:16px; padding:14px 8px; text-align:center;
+    cursor:pointer; box-shadow:0 4px 0 #d7e3ea; transition:transform .12s;
+    border:3px solid transparent;
+  }
+  .p-card:hover { transform:scale(1.05); border-color:#ffd54d; }
+  .p-card .sym { font-size:1.7rem; font-weight:bold; color:#2b7fd4; }
+  .p-card .ex  { font-size:.95rem; color:#666; margin-top:6px; line-height:1.4; }
+  .p-card .ex b { color:#e2543e; }
+  .tip { text-align:center; color:#558; font-size:.9rem; margin:10px 0; }
+
+  .unit-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:12px 0; }
+  .unit-btn {
+    border:none; cursor:pointer; padding:8px 16px; border-radius:24px;
+    background:#fff; color:#2b7fd4; font-weight:bold; font-size:.95rem;
+    box-shadow:0 3px 0 #cfd8de;
+  }
+  .unit-btn.on { background:#2b7fd4; color:#fff; }
+
+  .mode-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-top:10px; }
+  .mode-card {
+    background:#fff; border-radius:20px; padding:22px 12px; text-align:center;
+    cursor:pointer; box-shadow:0 5px 0 #d7e3ea; transition:transform .12s;
+  }
+  .mode-card:hover { transform:translateY(-4px); }
+  .mode-card .ic { font-size:2.6rem; }
+  .mode-card .nm { font-size:1.15rem; font-weight:bold; color:#345; margin-top:8px; }
+  .mode-card .ds { font-size:.85rem; color:#789; margin-top:4px; }
+
+  .game-area {
+    max-width:760px; margin:10px auto; background:#ffffffdd; border-radius:24px;
+    padding:22px 16px; box-shadow:0 6px 20px rgba(60,90,120,.15); min-height:340px;
+  }
+  .back-btn {
+    border:none; background:#eef4f8; color:#357; border-radius:20px;
+    padding:8px 18px; font-weight:bold; cursor:pointer; margin-bottom:12px;
+  }
+  .prog { height:14px; background:#e3edf3; border-radius:10px; overflow:hidden; margin:8px 0 16px; }
+  .prog > div { height:100%; width:0%; background:linear-gradient(90deg,#ffd54d,#ff8a5c); transition:width .3s; }
+
+  .big-word { text-align:center; margin:10px 0; }
+  .big-word .w { font-size:2.6rem; font-weight:bold; color:#2b3a55; letter-spacing:1px; }
+  .big-word .ipa { font-size:1.2rem; color:#e2543e; margin-top:4px; }
+  .big-word .cn { font-size:1.3rem; color:#3c7a5d; margin-top:8px; font-weight:bold; }
+  .spk {
+    border:none; cursor:pointer; background:#ffd54d; color:#7a4b00;
+    font-size:1.1rem; border-radius:50%; width:52px; height:52px; margin-top:10px;
+    box-shadow:0 4px 0 #d9a800;
+  }
+  .spk:active { transform:translateY(3px); box-shadow:none; }
+
+  .opt-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+  .opt {
+    background:#fff; border:3px solid #cfe0ee; border-radius:16px; padding:16px 10px;
+    font-size:1.25rem; font-weight:bold; color:#345; cursor:pointer; text-align:center;
+  }
+  .opt:hover { border-color:#3fb6ff; }
+  .opt.right { background:#d2f5d8; border-color:#4caf50; color:#1b5e20; }
+  .opt.wrong { background:#ffdfe0; border-color:#e2543e; color:#a02c1a; }
+
+  .letters { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:16px 0; }
+  .ltr {
+    width:52px; height:52px; border-radius:12px; border:none; cursor:pointer;
+    font-size:1.5rem; font-weight:bold; background:#3fb6ff; color:#fff;
+    box-shadow:0 4px 0 #2b7fd4;
+  }
+  .ltr.used { visibility:hidden; }
+  .ltr:active { transform:translateY(3px); box-shadow:none; }
+  .slots { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; min-height:56px; margin:10px 0; }
+  .slot {
+    min-width:44px; height:52px; border-radius:10px; background:#fff8e1;
+    border:3px dashed #ffb300; display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem; font-weight:bold; color:#7a4b00; padding:0 6px; cursor:pointer;
+  }
+
+  .match-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .match-col { display:flex; flex-direction:column; gap:10px; }
+  .m-card {
+    background:#fff; border:3px solid #cfe0ee; border-radius:14px; padding:14px 8px;
+    font-size:1.2rem; font-weight:bold; text-align:center; cursor:pointer; color:#345;
+  }
+  .m-card.sel { border-color:#ffb300; background:#fff6da; }
+  .m-card.done { background:#d2f5d8; border-color:#4caf50; color:#1b5e20; opacity:.65; pointer-events:none; }
+  .m-card.bad { animation:shake .35s; border-color:#e2543e; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .center { text-align:center; }
+  .btn {
+    border:none; cursor:pointer; font-size:1.1rem; font-weight:bold; color:#fff;
+    padding:12px 30px; border-radius:40px; background:linear-gradient(135deg,#3fb6ff,#2b7fd4);
+    box-shadow:0 4px 0 #1f639f; margin:6px;
+  }
+  .btn:active { transform:translateY(3px); box-shadow:none; }
+  .btn.green { background:linear-gradient(135deg,#5ad07a,#2f9e4f); box-shadow:0 4px 0 #23773a; }
+  .msg { text-align:center; font-size:1.25rem; font-weight:bold; min-height:1.8em; margin:8px 0; color:#e2543e; }
+  .confetti { position:fixed; top:-10%; font-size:2rem; z-index:99; pointer-events:none; animation:fall 1.6s ease-in forwards; }
+  @keyframes fall { to { transform:translateY(115vh) rotate(360deg); opacity:.2; } }
+  .flash {
+    perspective:800px; max-width:420px; margin:10px auto; cursor:pointer;
+  }
+  .flash-inner { position:relative; transition:transform .5s; transform-style:preserve-3d; min-height:230px; }
+  .flash.flip .flash-inner { transform:rotateY(180deg); }
+  .face {
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:22px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:#fff; box-shadow:0 6px 16px rgba(60,90,120,.18); padding:18px;
+  }
+  .face.back { transform:rotateY(180deg); background:#fff8e1; }
+  .face .em { font-size:3rem; }
+  footer { text-align:center; color:#7a97a8; font-size:.8rem; margin-top:24px; }
+</style>
+</head>
+<body>
+<div class="stars">⭐ <span id="starCount">0</span></div>
+<header>
+  <h1>🎒 英语单词大冒险</h1>
+  <p>外研版《英语》三年级上册 · 边玩边学,把单词全背下来!</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active-p" id="tabPhon" onclick="showTab('phon')">🔤 音标学习</button>
+  <button class="tab-btn" id="tabWord" onclick="showTab('word')">🎮 快乐背单词</button>
+</div>
+
+<!-- ============ 音标学习 ============ -->
+<div class="panel" id="panelPhon">
+  <div class="sub-tabs">
+    <button class="sub-btn on" id="subV" onclick="showPhon('vowel')">🍎 元音(20)</button>
+    <button class="sub-btn" id="subC" onclick="showPhon('cons')">🍇 辅音(28)</button>
+    <button class="sub-btn" id="subQ" onclick="startPhonQuiz()">🏆 发音闯关</button>
+  </div>
+  <p class="tip">点一点小卡片,听一听例词的发音,跟着读三遍!</p>
+  <div class="grid" id="phonGrid"></div>
+  <div class="game-area hidden" id="phonQuiz"></div>
+</div>
+
+<!-- ============ 快乐背单词 ============ -->
+<div class="panel hidden" id="panelWord">
+  <p class="tip">先选一个单元,再挑一个喜欢的游戏开始闯关吧!</p>
+  <div class="unit-row" id="unitRow"></div>
+  <div class="mode-grid" id="modeGrid">
+    <div class="mode-card" onclick="startFlash()"><div class="ic">📇</div><div class="nm">单词卡片</div><div class="ds">翻一翻,认单词</div></div>
+    <div class="mode-card" onclick="startListen()"><div class="ic">🎧</div><div class="nm">听音选词</div><div class="ds">听发音,选单词</div></div>
+    <div class="mode-card" onclick="startSpell()"><div class="ic">🧩</div><div class="nm">拼写小达人</div><div class="ds">把字母排好队</div></div>
+    <div class="mode-card" onclick="startMatch()"><div class="ic">🔗</div><div class="nm">单词消消乐</div><div class="ds">中英文配配对</div></div>
+  </div>
+  <div class="game-area hidden" id="wordGame"></div>
+</div>
+
+<footer>单词内容依据 2024 外研版(三年级起点)三年级上册课后单词表整理 · 发音由浏览器语音合成提供</footer>
+
+<script>
+/* ================= 课本单词库(2024 外研版 三年级上册) ================= */
+const UNITS = [
+ { id:"W", name:"Welcome 开学啦", words:[
+  ["hello","həˈləʊ","你好","👋"],["hi","haɪ","嗨","👋"],["I","aɪ","我","🙋"],["am","æm","是","✔️"],
+  ["what","wɒt","什么","❓"],["your","jɔː","你的","👉"],["name","neɪm","名字","📛"],["my","maɪ","我的","🙋"],
+  ["goodbye","ˌɡʊdˈbaɪ","再见","👋"],["have","hæv","有","🎁"],["nice","naɪs","令人愉快的","😊"],["day","deɪ","天,日","🌞"],
+  ["good","ɡʊd","好的","👍"],["morning","ˈmɔːnɪŋ","早晨","🌅"],["Ms","mɪz","女士","👩‍🏫"],["stand","stænd","站立","🧍"],
+  ["sit","sɪt","坐","🪑"],["open","ˈəʊpən","打开","📖"],["book","bʊk","书","📕"],["point","pɔɪnt","指","👉"],
+  ["say","seɪ","说","🗣️"],["read","riːd","读","📖"],["listen","ˈlɪsn","听","👂"],["write","raɪt","写","✏️"]
+ ]},
+ { id:"U1", name:"Unit 1 交朋友", words:[
+  ["friend","frend","朋友","🧑‍🤝‍🧑"],["meet","miːt","认识,遇见","🤝"],["you","juː","你","👉"],["play","pleɪ","玩耍","⚽"],
+  ["happy","ˈhæpi","高兴的","😄"],["welcome","ˈwelkəm","欢迎","🎉"],["everyone","ˈevriwʌn","每个人","👨‍👩‍👧‍👦"],["nine","naɪn","九","9️⃣"],
+  ["she","ʃiː","她","👧"],["too","tuː","也","➕"],["we","wiː","我们","👫"],["from","frɒm","来自","🌍"],
+  ["twin","twɪn","双胞胎之一","👯"],["he","hiː","他","👦"],["come","kʌm","来","🚶"],["and","ænd","和","➕"],
+  ["no","nəʊ","不,没有","🙅"],["help","help","帮助","🆘"],["here","hɪə","这里","📍"],["thank","θæŋk","感谢","🙏"],
+  ["together","təˈɡeðə","一起","🤝"],["great","ɡreɪt","极棒的","🌟"],["song","sɒŋ","歌曲","🎵"],["with","wɪð","和……一起","👫"]
+ ]},
+ { id:"U2", name:"Unit 2 学习用品", words:[
+  ["pack","pæk","收拾,打包","🎒"],["pen","pen","钢笔","🖊️"],["pencil","ˈpensl","铅笔","✏️"],["pencil case","ˈpensl keɪs","笔袋","👝"],
+  ["bag","bæɡ","包","👜"],["school","skuːl","学校","🏫"],["ruler","ˈruːlə","尺子","📏"],["eraser","ɪˈreɪzə","橡皮","🧽"],
+  ["this","ðɪs","这,这个","👇"],["in","ɪn","在……里","📥"],["schoolbag","ˈskuːlbæɡ","书包","🎒"],["that","ðæt","那,那个","👆"],
+  ["yes","jes","是,对","✅"],["guess","ɡes","猜","🤔"],["kid","kɪd","小孩","🧒"],["thing","θɪŋ","东西","📦"],
+  ["there","ðeə","在那里","👉"],["back","bæk","回原处","🔙"],["look","lʊk","看","👀"]
+ ]},
+ { id:"U3", name:"Unit 3 缤纷世界", words:[
+  ["colourful","ˈkʌləfəl","色彩鲜艳的","🎨"],["world","wɜːld","世界","🌍"],["umbrella","ʌmˈbrelə","雨伞","☂️"],["clothes","kləʊðz","衣服","👕"],
+  ["red","red","红色","🔴"],["pink","pɪŋk","粉色","🌸"],["green","ɡriːn","绿色","🟢"],["yellow","ˈjeləʊ","黄色","🟡"],
+  ["orange","ˈɒrɪndʒ","橙色","🟠"],["blue","bluː","蓝色","🔵"],["purple","ˈpɜːpl","紫色","🟣"],["rainbow","ˈreɪnbəʊ","彩虹","🌈"],
+  ["want","wɒnt","想要","🙏"],["balloon","bəˈluːn","气球","🎈"],["colour","ˈkʌlə","颜色","🎨"],["can","kæn","能,会","💪"],
+  ["see","siː","看见","👀"],["right","raɪt","正确的","✅"]
+ ]},
+ { id:"U4", name:"Unit 4 数字乐趣", words:[
+  ["number","ˈnʌmbə","数字","🔢"],["count","kaʊnt","数数","🔢"],["how","haʊ","多少,怎样","❓"],["bird","bɜːd","鸟","🐦"],
+  ["one","wʌn","一","1️⃣"],["two","tuː","二","2️⃣"],["three","θriː","三","3️⃣"],["four","fɔː","四","4️⃣"],
+  ["five","faɪv","五","5️⃣"],["six","sɪks","六","6️⃣"],["seven","ˈsevn","七","7️⃣"],["eight","eɪt","八","8️⃣"],
+  ["ten","ten","十","🔟"],["eleven","ɪˈlevn","十一","1️⃣1️⃣"],["twelve","twelv","十二","1️⃣2️⃣"],["make","meɪk","制作","🛠️"],
+  ["beautiful","ˈbjuːtɪfl","美丽的","🌺"],["amazing","əˈmeɪzɪŋ","令人惊奇的","🤩"],["show","ʃəʊ","给……看","🎭"],["egg","eɡ","蛋","🥚"],
+  ["hungry","ˈhʌŋɡri","饥饿的","🍽️"],["big","bɪɡ","大的","🐘"],["little","ˈlɪtl","小的","🐜"]
+ ]},
+ { id:"U5", name:"Unit 5 幸福家庭", words:[
+  ["family","ˈfæməli","家庭","👨‍👩‍👧"],["dad","dæd","爸爸","👨"],["mum","mʌm","妈妈","👩"],["father","ˈfɑːðə","父亲","👨"],
+  ["mother","ˈmʌðə","母亲","👩"],["brother","ˈbrʌðə","兄弟","👦"],["sister","ˈsɪstə","姐妹","👧"],["grandpa","ˈɡrænpɑː","爷爷;外公","👴"],
+  ["grandma","ˈɡrænmɑː","奶奶;外婆","👵"],["me","miː","我(宾格)","🙋"],["who","huː","谁","❓"],["people","ˈpiːpl","人们","👥"],
+  ["story","ˈstɔːri","故事","📚"],["cap","kæp","帽子","🧢"],["but","bʌt","但是","↔️"],["worry","ˈwʌri","担心","😟"],
+  ["on","ɒn","在……上","⬆️"],["photo","ˈfəʊtəʊ","照片","📷"],["love","lʌv","爱","❤️"]
+ ]},
+ { id:"U6", name:"Unit 6 温馨的家", words:[
+  ["sweet","swiːt","甜蜜的","🍬"],["home","həʊm","家","🏠"],["room","ruːm","房间","🚪"],["bedroom","ˈbedruːm","卧室","🛏️"],
+  ["bathroom","ˈbɑːθruːm","浴室","🛁"],["kitchen","ˈkɪtʃɪn","厨房","🍳"],["living room","ˈlɪvɪŋ ruːm","客厅","🛋️"],["dining room","ˈdaɪnɪŋ ruːm","餐厅","🍽️"],
+  ["door","dɔː","门","🚪"],["bed","bed","床","🛏️"],["table","ˈteɪbl","桌子","🪑"],["chair","tʃeə","椅子","🪑"],
+  ["under","ˈʌndə","在……下面","⬇️"],["box","bɒks","盒子","📦"],["where","weə","在哪里","❓"],["find","faɪnd","找到","🔍"],
+  ["cat","kæt","猫","🐱"],["whose","huːz","谁的","❓"]
+ ]}
+];
+
+/* ================= 音标卡片(例词全部来自本册课本) ================= */
+const PHONEMES = {
+ vowel:[
+  ["iː","s<b>ee</b>","see"],["ɪ","s<b>i</b>t","sit"],["e","b<b>e</b>d","bed"],["æ","c<b>a</b>t","cat"],
+  ["ɜː","b<b>ir</b>d","bird"],["ə","<b>u</b>mbrella","umbrella"],["ʌ","m<b>u</b>m","mum"],["ɑː","f<b>a</b>ther","father"],
+  ["ɒ","wh<b>a</b>t","what"],["ɔː","f<b>our</b>","four"],["ʊ","b<b>oo</b>k","book"],["uː","bl<b>ue</b>","blue"],
+  ["eɪ","n<b>a</b>me","name"],["aɪ","f<b>i</b>ve","five"],["ɔɪ","p<b>oi</b>nt","point"],["əʊ","h<b>o</b>me","home"],
+  ["aʊ","h<b>ow</b>","how"],["ɪə","h<b>ere</b>","here"],["eə","ch<b>air</b>","chair"],["ʊə","t<b>our</b>(游览)","tour"]
+ ],
+ cons:[
+  ["p","<b>p</b>en","pen"],["b","<b>b</b>ag","bag"],["t","<b>t</b>able","table"],["d","<b>d</b>oor","door"],
+  ["k","<b>c</b>at","cat"],["g","<b>g</b>ood","good"],["f","<b>f</b>ive","five"],["v","se<b>v</b>en","seven"],
+  ["θ","<b>th</b>ree","three"],["ð","<b>th</b>is","this"],["s","<b>s</b>it","sit"],["z","i<b>s</b>(是)","is"],
+  ["ʃ","<b>sh</b>e","she"],["ʒ","u<b>s</b>ually(通常)","usually"],["h","<b>h</b>ello","hello"],["r","<b>r</b>ed","red"],
+  ["tʃ","<b>ch</b>air","chair"],["dʒ","oran<b>ge</b>","orange"],["tr","<b>tr</b>ee(树)","tree"],["dr","<b>dr</b>aw(画画)","draw"],
+  ["ts","ca<b>ts</b>(复数)","cats"],["dz","be<b>ds</b>(复数)","beds"],["m","<b>m</b>um","mum"],["n","<b>n</b>ame","name"],
+  ["ŋ","so<b>ng</b>","song"],["l","<b>l</b>ook","look"],["w","<b>w</b>e","we"],["j","<b>y</b>es","yes"]
+ ]
+};
+
+/* ================= 全局状态 ================= */
+let stars = parseInt(localStorage.getItem("ewa_stars")||"0");
+document.getElementById("starCount").textContent = stars;
+let curUnit = "ALL";
+
+function saveStars(n){ stars+=n; localStorage.setItem("ewa_stars",stars); document.getElementById("starCount").textContent = stars; }
+function speak(text){
+  /* 优先使用词典真人发音(女声,课本点读音质),失败时回退到系统语音 */
+  const audio = new Audio("https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(text) + "&type=1");
+  audio.play().catch(()=> speakLocal(text));
+  audio.onerror = ()=> speakLocal(text);
+}
+function speakLocal(text){
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-GB"; u.rate = .78; u.pitch = 1.1;
+  const voices = speechSynthesis.getVoices();
+  const prefer = ["Google UK English Female","Google US English","Samantha","Microsoft Aria","Microsoft Zira","Karen","Tessa","Victoria"];
+  let v = null;
+  for(const name of prefer){ v = voices.find(x=>x.name.includes(name)); if(v) break; }
+  if(!v) v = voices.find(x=>x.lang.startsWith("en"));
+  if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function confetti(){
+  const em = ["🎉","⭐","🌟","🎈","🍭"];
+  for(let i=0;i<14;i++){
+    const s = document.createElement("div");
+    s.className="confetti"; s.textContent = em[Math.floor(Math.random()*em.length)];
+    s.style.left = Math.random()*100+"vw";
+    s.style.animationDelay = (Math.random()*.5)+"s";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),2300);
+  }
+}
+function allWords(){ return UNITS.flatMap(u=>u.words.map(w=>({en:w[0],ipa:w[1],cn:w[2],em:w[3],unit:u.id}))); }
+function unitWords(){
+  if(curUnit==="ALL") return allWords();
+  const u = UNITS.find(u=>u.id===curUnit);
+  return u.words.map(w=>({en:w[0],ipa:w[1],cn:w[2],em:w[3],unit:u.id}));
+}
+
+/* ================= 界面切换 ================= */
+function showTab(t){
+  document.getElementById("panelPhon").classList.toggle("hidden", t!=="phon");
+  document.getElementById("panelWord").classList.toggle("hidden", t!=="word");
+  document.getElementById("tabPhon").className = "tab-btn" + (t==="phon"?" active-p":"");
+  document.getElementById("tabWord").className = "tab-btn" + (t==="word"?" active-w":"");
+}
+function showPhon(kind){
+  document.getElementById("phonQuiz").classList.add("hidden");
+  document.getElementById("phonGrid").classList.remove("hidden");
+  document.getElementById("subV").className = "sub-btn"+(kind==="vowel"?" on":"");
+  document.getElementById("subC").className = "sub-btn"+(kind==="cons"?" on":"");
+  document.getElementById("subQ").className = "sub-btn";
+  const g = document.getElementById("phonGrid");
+  g.innerHTML = PHONEMES[kind].map(p=>
+    `<div class="p-card" onclick="speak('${p[2]}')">
+       <div class="sym">/${p[0]}/</div>
+       <div class="ex">${p[1]}<br>🔊 点我读</div>
+     </div>`).join("");
+}
+
+/* ================= 音标闯关:听单词,找发音 ================= */
+let pq = null;
+function startPhonQuiz(){
+  document.getElementById("phonGrid").classList.add("hidden");
+  document.getElementById("subV").className = "sub-btn";
+  document.getElementById("subC").className = "sub-btn";
+  document.getElementById("subQ").className = "sub-btn on";
+  const allPh = [...PHONEMES.vowel.map(p=>p[0]), ...PHONEMES.cons.map(p=>p[0])];
+  const words = allWords();
+  const qs = [];
+  const phPool = shuffle(allPh.filter(ph => words.filter(w=>w.ipa.includes(ph)).length >= 1
+      && words.filter(w=>!w.ipa.includes(ph)).length >= 3)).slice(0,10);
+  phPool.forEach(ph=>{
+    const ans = shuffle(words.filter(w=>w.ipa.includes(ph)))[0];
+    const wrong = shuffle(words.filter(w=>!w.ipa.includes(ph))).slice(0,3);
+    qs.push({ph, ans, opts:shuffle([ans,...wrong])});
+  });
+  pq = {qs, i:0, score:0};
+  renderPhonQuiz();
+}
+function renderPhonQuiz(){
+  const box = document.getElementById("phonQuiz");
+  box.classList.remove("hidden");
+  if(pq.i >= pq.qs.length){
+    const s = pq.score>=8?3:pq.score>=5?2:1;
+    saveStars(s);
+    confetti();
+    box.innerHTML = `<button class="back-btn" onclick="showPhon('vowel')">← 返回音标表</button>
+      <div class="center"><div style="font-size:3rem">🏆</div>
+      <h2>闯关完成!</h2><p style="margin:10px">答对 ${pq.score} / ${pq.qs.length} 题,获得 ${s} 颗⭐!</p>
+      <button class="btn green" onclick="startPhonQuiz()">再玩一次</button></div>`;
+    return;
+  }
+  const q = pq.qs[pq.i];
+  box.innerHTML = `<button class="back-btn" onclick="showPhon('vowel')">← 返回音标表</button>
+    <div class="prog"><div style="width:${pq.i/pq.qs.length*100}%"></div></div>
+    <div class="center"><h2>第 ${pq.i+1} 题 / 共 ${pq.qs.length} 题</h2>
+    <p style="font-size:1.3rem;margin:12px">哪个单词里含有 <b style="color:#e2543e;font-size:1.8rem">/${q.ph}/</b> 这个音?<br><small>先点 🔊 听一听,再做选择</small></p></div>
+    <div class="opt-grid" id="pqOpts"></div><div class="msg" id="pqMsg"></div>`;
+  const g = document.getElementById("pqOpts");
+  q.opts.forEach(w=>{
+    const d = document.createElement("div");
+    d.className = "opt";
+    d.innerHTML = `${w.en} <span style="font-size:1rem;color:#789">/${w.ipa}/</span>
+      <button class="spk" style="width:40px;height:40px;font-size:.9rem" onclick="event.stopPropagation();speak('${w.en}')">🔊</button>`;
+    d.onclick = ()=>{
+      if(w === q.ans){
+        d.classList.add("right"); pq.score++; saveStars(1);
+        document.getElementById("pqMsg").textContent = "🎉 太棒了!答对啦!";
+        speak(q.ans.en);
+      } else {
+        d.classList.add("wrong");
+        document.getElementById("pqMsg").textContent = `再想想~ 正确答案是 ${q.ans.en}`;
+      }
+      [...g.children].forEach(c=>c.style.pointerEvents="none");
+      setTimeout(()=>{ pq.i++; renderPhonQuiz(); }, 1600);
+    };
+    g.appendChild(d);
+  });
+}
+
+/* ================= 单元选择 ================= */
+function buildUnitRow(){
+  const row = document.getElementById("unitRow");
+  const btns = [{id:"ALL",name:"🌈 全部单元"}, ...UNITS.map(u=>({id:u.id,name:u.name}))];
+  row.innerHTML = btns.map(u=>
+    `<button class="unit-btn${curUnit===u.id?" on":""}" onclick="setUnit('${u.id}')">${u.name}</button>`).join("");
+}
+function setUnit(id){
+  curUnit = id;
+  buildUnitRow();
+  document.getElementById("wordGame").classList.add("hidden");
+  document.getElementById("modeGrid").classList.remove("hidden");
+}
+function backToModes(){
+  document.getElementById("wordGame").classList.add("hidden");
+  document.getElementById("modeGrid").classList.remove("hidden");
+}
+function openGame(){
+  document.getElementById("modeGrid").classList.add("hidden");
+  document.getElementById("wordGame").classList.remove("hidden");
+}
+
+/* ================= 游戏一:单词卡片 ================= */
+let fc = null;
+function startFlash(){
+  openGame();
+  fc = { words: shuffle(unitWords()), i:0 };
+  renderFlash();
+}
+function renderFlash(){
+  const box = document.getElementById("wordGame");
+  if(fc.i >= fc.words.length){
+    confetti(); saveStars(3);
+    box.innerHTML = `<button class="back-btn" onclick="backToModes()">← 返回游戏列表</button>
+      <div class="center"><div style="font-size:3rem">🎓</div><h2>本组单词都认识啦!</h2>
+      <p style="margin:10px">共学习 ${fc.words.length} 个单词,奖励 3 颗⭐!</p>
+      <button class="btn green" onclick="startFlash()">再来一组</button></div>`;
+    return;
+  }
+  const w = fc.words[fc.i];
+  box.innerHTML = `<button class="back-btn" onclick="backToModes()">← 返回游戏列表</button>
+    <div class="prog"><div style="width:${fc.i/fc.words.length*100}%"></div></div>
+    <p class="center" style="color:#789">${fc.i+1} / ${fc.words.length} · 点卡片翻面,跟读三遍哦</p>
+    <div class="flash" id="flashCard" onclick="this.classList.toggle('flip');">
+      <div class="flash-inner">
+        <div class="face">
+          <div class="em">${w.em}</div>
+          <div class="big-word"><div class="w">${w.en}</div><div class="ipa">/${w.ipa}/</div></div>
+          <p style="color:#9ab">👆 点我看意思</p>
+        </div>
+        <div class="face back">
+          <div class="em">${w.em}</div>
+          <div class="big-word"><div class="w">${w.en}</div><div class="ipa">/${w.ipa}/</div><div class="cn">${w.cn}</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="center">
+      <button class="spk" onclick="speak('${w.en}')">🔊</button><br>
+      <button class="btn" onclick="speak(fc.words[fc.i].en); setTimeout(()=>{fc.i++;renderFlash();},500)">✅ 我记住了,下一个</button>
+    </div>`;
+}
+
+/* ================= 游戏二:听音选词 ================= */
+let lg = null;
+function startListen(){
+  openGame();
+  const pool = unitWords();
+  const qs = shuffle(pool).slice(0, Math.min(10, pool.length));
+  lg = {qs, i:0, score:0};
+  renderListen();
+}
+function renderListen(){
+  const box = document.getElementById("wordGame");
+  if(lg.i >= lg.qs.length){
+    const s = lg.score>=8?3:lg.score>=5?2:1;
+    confetti(); saveStars(s);
+    box.innerHTML = `<button class="back-btn" onclick="backToModes()">← 返回游戏列表</button>
+      <div class="center"><div style="font-size:3rem">🎧</div><h2>听力闯关完成!</h2>
+      <p style="margin:10px">答对 ${lg.score} / ${lg.qs.length} 题,获得 ${s} 颗⭐!</p>
+      <button class="btn green" onclick="startListen()">再玩一次</button></div>`;
+    return;
+  }
+  const ans = lg.qs[lg.i];
+  const pool = unitWords().filter(w=>w.en!==ans.en);
+  const opts = shuffle([ans, ...shuffle(pool).slice(0,3)]);
+  box.innerHTML = `<button class="back-btn" onclick="backToModes()">← 返回游戏列表</button>
+    <div class="prog"><div style="width:${lg.i/lg.qs.length*100}%"></div></div>
+    <div class="center"><h2>第 ${lg.i+1} 题 / 共 ${lg.qs.length} 题</h2>
+      <p style="margin:8px;color:#789">仔细听,选出你听到的单词</p>
+      <button class="spk" style="width:70px;height:70px;font-size:1.6rem" onclick="speak('${ans.en}')">🔊</button>
+    </div>
+    <div class="opt-grid" id="lgOpts"></div><div class="msg" id="lgMsg"></div>`;
+  setTimeout(()=>speak(ans.en), 350);
+  const g = document.getElementById("lgOpts");
+  opts.forEach(w=>{
+    const d = document.createElement("div");
+    d.className = "opt";
+    d.textContent = `${w.em} ${w.en}`;
+    d.onclick = ()=>{
+      if(w===ans){ d.classList.add("right"); lg.score++; saveStars(1);
+        document.getElementById("lgMsg").textContent = `🎉 答对啦!${ans.en} ${ans.cn}`;
+      } else { d.classList.add("wrong");
+        document.getElementById("lgMsg").textContent = `正确答案是 ${ans.em} ${ans.en}(${ans.cn})`;
+      }
+      [...g.children].forEach(c=>c.style.pointerEvents="none");
+      setTimeout(()=>{ lg.i++; renderListen(); }, 1700);
+    };
+    g.appendChild(d);
+  });
+}
+
+/* ================= 游戏三:拼写小达人 ================= */
+let sp = null;
+function startSpell(){
+  openGame();
+  const pool = unitWords().filter(w=>w.en.length<=12 && !w.en.includes(" "));
+  sp = { qs: shuffle(pool).slice(0, Math.min(8, pool.length)), i:0, score:0, cur:[] };
+  renderSpell();
+}
+function renderSpell(){
+  const box = document.getElementById("wordGame");
+  if(sp.i >= sp.qs.length){
+    const s = sp.score>=7?3:sp.score>=4?2:1;
+    confetti(); saveStars(s);
+    box.innerHTML = `<button class="back-btn" onclick="backToModes()">← 返回游戏列表</button>
+      <div class="center"><div style="font-size:3rem">🧩</div><h2>拼写闯关完成!</h2>
+      <p style="margin:10px">拼对 ${sp.score} / ${sp.qs.length} 个单词,获得 ${s} 颗⭐!</p>
+      <button class="btn green" onclick="startSpell()">再玩一次</button></div>`;
+    return;
+  }
+  const w = sp.qs[sp.i];
+  sp.cur = [];
+  const letters = shuffle(w.en.split("").map((c,idx)=>({c,idx})));
+  box.innerHTML = `<button class="back-btn" onclick="backToModes()">← 返回游戏列表</button>
+    <div class="prog"><div style="width:${sp.i/sp.qs.length*100}%"></div></div>
+    <div class="center"><h2>第 ${sp.i+1} 题 / 共 ${sp.qs.length} 题</h2>
+      <p style="font-size:1.5rem;margin:8px">${w.em} <b style="color:#3c7a5d">${w.cn}</b></p>
+      <button class="spk" onclick="speak('${w.en}')">🔊</button>
+    </div>
+    <div class="slots" id="slots"></div>
+    <div class="letters" id="letters"></div>
+    <div class="msg" id="spMsg"></div>`;
+  const sl = document.getElementById("slots");
+  const lt = document.getElementById("letters");
+  letters.forEach(L=>{
+    const b = document.createElement("button");
+    b.className = "ltr"; b.textContent = L.c;
+    b.onclick = ()=>{
+      b.classList.add("used");
+      const s = document.createElement("div");
+      s.className = "slot"; s.textContent = L.c;
+      s.onclick = ()=>{ b.classList.remove("used"); s.remove(); sp.cur = sp.cur.filter(x=>x!==s); };
+      sl.appendChild(s); sp.cur.push(s);
+      if(sp.cur.length === w.en.length){
+        const word = sp.cur.map(x=>x.textContent).join("");
+        if(word === w.en){
+          sp.score++; saveStars(1);
+          document.getElementById("spMsg").textContent = `🎉 拼对啦!${w.en} /${w.ipa}/ ${w.cn}`;
+          speak(w.en);
+          lt.style.pointerEvents = "none";
+          setTimeout(()=>{ sp.i++; renderSpell(); }, 1800);
+        } else {
+          document.getElementById("spMsg").textContent = "哎呀,顺序不对,再试一次!";
+          setTimeout(()=>{ sl.innerHTML=""; sp.cur=[]; [...lt.children].forEach(x=>x.classList.remove("used")); }, 800);
+        }
+      }
+    };
+    lt.appendChild(b);
+  });
+}
+
+/* ================= 游戏四:单词消消乐 ================= */
+let mg = null;
+function startMatch(){
+  openGame();
+  const pool = shuffle(unitWords()).slice(0, Math.min(6, unitWords().length));
+  mg = { pairs: pool, sel:null, done:0 };
+  const box = document.getElementById("wordGame");
+  box.innerHTML = `<button class="back-btn" onclick="backToModes()">← 返回游戏列表</button>
+    <p class="center" style="color:#789;margin-bottom:10px">点英文单词,再点它的中文意思,全部配对成功就赢啦!</p>
+    <div class="match-grid">
+      <div class="match-col" id="colEn"></div>
+      <div class="match-col" id="colCn"></div>
+    </div>
+    <div class="msg" id="mgMsg"></div>`;
+  const en = document.getElementById("colEn"), cn = document.getElementById("colCn");
+  shuffle(pool).forEach(w=>{
+    const d = document.createElement("div");
+    d.className = "m-card"; d.textContent = `${w.em} ${w.en}`; d.dataset.k = w.en; d.dataset.side = "en";
+    d.onclick = ()=>pickMatch(d, w);
+    en.appendChild(d);
+  });
+  shuffle(pool).forEach(w=>{
+    const d = document.createElement("div");
+    d.className = "m-card"; d.textContent = w.cn; d.dataset.k = w.en; d.dataset.side = "cn";
+    d.onclick = ()=>pickMatch(d, w);
+    cn.appendChild(d);
+  });
+}
+function pickMatch(el, w){
+  if(el.classList.contains("done")) return;
+  if(!mg.sel){
+    mg.sel = el; el.classList.add("sel");
+    if(el.dataset.side==="en") speak(w.en);
+    return;
+  }
+  if(mg.sel === el){ el.classList.remove("sel"); mg.sel=null; return; }
+  if(mg.sel.dataset.side === el.dataset.side){
+    mg.sel.classList.remove("sel"); mg.sel = el; el.classList.add("sel"); return;
+  }
+  if(mg.sel.dataset.k === el.dataset.k){
+    mg.sel.classList.remove("sel"); mg.sel.classList.add("done");
+    el.classList.add("done"); mg.sel = null;
+    mg.done++; saveStars(1); speak(w.en);
+    document.getElementById("mgMsg").textContent = "🎉 配对成功!";
+    if(mg.done === mg.pairs.length){
+      confetti(); saveStars(3);
+      document.getElementById("mgMsg").textContent = "🏆 全部配对成功!奖励 3 颗⭐!";
+      const box = document.getElementById("wordGame");
+      const b = document.createElement("div");
+      b.className = "center";
+      b.innerHTML = `<button class="btn green" onclick="startMatch()">再玩一次</button>`;
+      box.appendChild(b);
+    }
+  } else {
+    el.classList.add("bad"); mg.sel.classList.add("bad");
+    const prev = mg.sel; mg.sel = null;
+    document.getElementById("mgMsg").textContent = "再想想,它们不是好朋友哦~";
+    setTimeout(()=>{ el.classList.remove("bad"); prev.classList.remove("bad","sel"); }, 500);
+  }
+}
+
+/* ================= 初始化 ================= */
+buildUnitRow();
+showPhon("vowel");
+speechSynthesis.getVoices();
+</script>
+</body>
+</html>
